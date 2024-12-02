@@ -1,7 +1,7 @@
 package com.example.smartpantry.controller;
 
-import com.smartpantryapp.service.PantryService;
-import com.smartpantryapp.service.RecipeSuggestionService;
+import com.example.smartpantry.service.PantryService;
+import com.example.smartpantry.service.RecipeSuggestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

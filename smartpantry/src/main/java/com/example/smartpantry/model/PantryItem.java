@@ -1,4 +1,4 @@
-package com.smartpantryapp.model;
+package com.example.smartpantry.model;
 
 public class PantryItem {
     private String name;

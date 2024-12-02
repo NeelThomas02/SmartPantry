@@ -1,7 +1,8 @@
 package com.example.smartpantry.controller;
 
-import com.smartpantryapp.service.PantryService;
-import com.smartpantryapp.service.NutritionalAnalysisService;
+import com.example.smartpantry.model.PantryItem;
+import com.example.smartpantry.service.PantryService;
+import com.example.smartpantry.service.NutritionalAnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,25 +22,36 @@ public class NutritionalAnalysisController {
     private NutritionalAnalysisService nutritionalService;
 
     @GetMapping("/analyze")
-    public ResponseEntity<?> getNutritionalAnalysis(@RequestParam String userId) {
+    public ResponseEntity<?> getNutritionalAnalysis(@RequestParam(required = false) String userId) {
+        // Validate that userId is provided
+        if (userId == null || userId.isBlank()) {
+            return ResponseEntity.status(400).body("User ID is required for nutritional analysis.");
+        }
+
         try {
             // Fetch pantry items for the user
-            List<String> pantryItems = pantryService.getPantryItems(userId).stream()
-                    .map(item -> item.getName())
-                    .collect(Collectors.toList());
+            List<PantryItem> pantryItems = pantryService.getPantryItems(userId);
+
+            if (pantryItems == null || pantryItems.isEmpty()) {
+                return ResponseEntity.status(404).body("No pantry items found for the user.");
+            }
 
             // Fetch nutritional data for each pantry item
             List<Map<String, Object>> nutritionalInfo = pantryItems.stream()
                     .map(item -> Map.of(
                             "item", item,
-                            "nutritionalData", nutritionalService.getNutritionalData(item)
+                            "nutritionalData", nutritionalService.getNutritionalData(String.valueOf(item))
                     ))
                     .collect(Collectors.toList());
 
             return ResponseEntity.ok(nutritionalInfo);
 
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(Map.of(
+                    "error", "Failed to fetch nutritional analysis",
+                    "details", e.getMessage()
+            ));
         }
     }
 }

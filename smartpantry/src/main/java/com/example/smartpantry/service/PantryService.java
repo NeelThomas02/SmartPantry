@@ -1,9 +1,9 @@
-package com.smartpantryapp.service;
+package com.example.smartpantry.service;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
-import com.smartpantryapp.model.PantryItem;
+import com.example.smartpantry.model.PantryItem;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
